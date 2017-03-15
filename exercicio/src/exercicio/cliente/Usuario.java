@@ -1,6 +1,6 @@
 package exercicio.cliente;
 
-import exercicio.Livro;
+import exercicio.livro.Livro;
 import java.util.ArrayList;
 
 public class Usuario extends Cliente {

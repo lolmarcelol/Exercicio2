@@ -1,4 +1,4 @@
-package exercicio;
+package exercicio.livro;
 
 public class Livro {
 
@@ -6,12 +6,21 @@ public class Livro {
     private String titulo;
     private int ano;
     private boolean isEmprestado;
+    private int idUsuario;
     
     public Livro(int id,String titulo,int ano){
         this.id = id;
         this.titulo = titulo;
         this.ano = ano;
         this.isEmprestado = false;
+    }
+    
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public int getId() {
@@ -44,6 +53,11 @@ public class Livro {
 
     public void setIsEmprestado(boolean isEmprestado) {
         this.isEmprestado = isEmprestado;
+    }
+    
+    public void emprestar(int idUsuario){
+        this.isEmprestado = false;
+        this.idUsuario = idUsuario;
     }
     
 }
