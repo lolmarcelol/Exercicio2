@@ -1,6 +1,7 @@
 package exercicio;
 
 import exercicio.cliente.Usuario;
+import exercicio.livro.Livro;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -10,12 +11,22 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Servidor {
+    
+    static String getAllLivros(ArrayList<Livro>livros){
+        String saida = "\t ID\t Nome\t Data";
+        for(Livro l : livros){
+            saida += l.getId()+"\t"+l.getTitulo()+"\t"+l.getAno();
+        }
+        return saida;
+    }
+    
     public static void main(String[] args) throws UnknownHostException, SocketException, IOException {
         ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
         DatagramSocket serverSocket = new DatagramSocket(9876);
         InetAddress IPAddress = InetAddress.getByName("localhost");
         DatagramSocket resposta = new DatagramSocket();
-
+        ArrayList<Livro> livros = new ArrayList<Livro>();
+        int id =0;
         byte[] receiveData = new byte[1024];
         boolean isAdmin;
         byte[] sendData = new byte[1024];
@@ -39,9 +50,32 @@ public class Servidor {
             sendData = mensagem1.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
             resposta.send(sendPacket);
-            
-            
+            //logica pós login
+         
+            receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            serverSocket.receive(receivePacket);
+            String sentence2 = new String( receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
+            System.out.println("livro: " + sentence2);
+            String[] acaoUsuario = sentence.split("-");
+            String acao = acaoUsuario[0];
+            // fazer o switch rolar decentemente
+            switch(acao){
+                case "add":
+                    Livro livro = new Livro(id,acaoUsuario[1],Integer.parseInt(acaoUsuario[2]));
+                    id++;
+                    livros.add(livro);
+                    break;
+                case "delete":
+                    sendData = getAllLivros(livros).getBytes();
+                    System.out.println(sendData);
+                    sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
+                    resposta.send(sendPacket);
+                    
+                    break;
+                    
             }
+            
+        }
     }
     
 }

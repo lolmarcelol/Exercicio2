@@ -14,6 +14,7 @@ public class ClienteServer {
         String usuario;
         String senha;
         String pacote1;
+        String pacote2 = "";
         String admin;
         String decisao = "null";
         byte[] receiveData = new byte[1024];
@@ -43,11 +44,36 @@ public class ClienteServer {
         DatagramPacket receivePacket = new DatagramPacket(new byte[1024],1024);
         socket.receive(receivePacket);
         String msg = new String(receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
-        System.out.println(msg);
         // troca de mensagens
         
         while(!decisao.equals("0")){
+            System.out.println(msg);
             decisao = sc.nextLine();
+            switch (decisao) {
+            case "1":
+                pacote2 = "add-"; 
+                System.out.println("Digite o nome do livro");
+                pacote2 += sc.nextLine() + "-";
+                System.out.println("Digite o ano do livro");
+                pacote2 += sc.nextLine();
+                sendData = pacote2.getBytes();
+                sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);//cria pacote
+                socket.send(sendPacket);//envia pacote
+                break;
+            case "2":
+                System.out.println("Escolha o livro a ser deletado");
+                pacote2 = "delete";
+                sendData = pacote2.getBytes();
+                sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);//cria pacote
+                socket.send(sendPacket);
+                socket.receive(receivePacket);
+                msg = new String(receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
+                System.out.println(msg);
+                break;
+            default:
+                 System.out.println("Tchau !");
+            }
+            System.out.println(pacote2);
         }
         
     }
