@@ -2,6 +2,7 @@ package exercicio.cliente;
 
 import exercicio.livro.Livro;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Usuario extends Cliente {
     private ArrayList<Livro> livros;
@@ -19,25 +20,25 @@ public class Usuario extends Cliente {
         this.livros = livros;
     }
     
-    public void consultaTodosLivros(ArrayList<Livro>livros){
-        for(Livro livro:livros)
-            System.out.println(livro.getTitulo() + " - " + livro.getAno());
-
-    }
-    
-    public boolean emprestar(ArrayList<Livro>livros,Livro livro){
-        for(Livro l:livros){
-            if(l.getId() == livro.getId() && l.isEmprestado() == false){
-                l.setIsEmprestado(true);
+    public boolean emprestar(ArrayList<Livro>livros,int id){
+        for(Iterator<Livro> iterator = livros.iterator();iterator.hasNext();){
+            Livro livro = iterator.next();
+            if(livro.getId()==id && livro.isEmprestado() == false){
+                livro.setIsEmprestado(true);
+                getLivros().add(livro);
+                livro.setIdUsuario(getId());
                 return true;
             }
         }
         return false;
     }
-    public boolean devovler(ArrayList<Livro>livros,Livro livro){
-        for(Livro l:livros){
-            if(l.getId() == livro.getId() && l.isEmprestado() == true){
-                l.setIsEmprestado(false);
+    public boolean devovler(int id){
+        for(Iterator<Livro> iterator = livros.iterator();iterator.hasNext();){
+            Livro livro = iterator.next();
+            if(livro.getId()==id && livro.isEmprestado() == true){
+                livro.setIsEmprestado(false);
+                getLivros().remove(livro);
+                livro.setIdUsuario(getId());
                 return true;
             }
         }
