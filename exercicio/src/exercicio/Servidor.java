@@ -1,7 +1,6 @@
 package exercicio;
 
 import exercicio.cliente.Administrador;
-import exercicio.cliente.Cliente;
 import exercicio.cliente.Usuario;
 import exercicio.livro.Livro;
 import java.io.IOException;
@@ -53,20 +52,21 @@ public class Servidor {
             InetAddress IPAddress = InetAddress.getByName("localhost");
             DatagramSocket resposta = new DatagramSocket();
             ArrayList<Livro> livros = new ArrayList<Livro>();
-            int idLivro =1;
-            int idUsuario =1;
-            int idAdmin =1;
+            Gerenciador gerenciador = new Gerenciador(clientes,admins,livros);
+
             byte[] receiveData = new byte[1024];
             boolean isAdmin = false;
             byte[] sendData = new byte[1024];
             String mensagem1;
             
-            livros.add(new Livro(idLivro,"livro1",1999));
-            livros.add(new Livro(idLivro++,"livro2",1923));
-            livros.add(new Livro(idLivro++,"livro3",1955));
-            
-            clientes.add(new Usuario(idUsuario,"usuario","usuario"));
-            admins.add(new Administrador(idAdmin,"marcelo","marcelo"));
+            gerenciador.getLivros().add(new Livro(gerenciador.getIdLivro(),"livro1",1999));
+            gerenciador.setIdLivro();
+            gerenciador.getLivros().add(new Livro(gerenciador.getIdLivro(),"livro2",1923));
+            gerenciador.setIdLivro();
+            gerenciador.getLivros().add(new Livro(gerenciador.getIdLivro(),"livro3",1955));
+            gerenciador.setIdLivro();
+            gerenciador.getClientes().add(new Usuario(gerenciador.getIdUsuario(),"usuario","usuario"));
+            gerenciador.getAdmins().add(new Administrador(gerenciador.getIdAdmin(),"marcelo","marcelo"));
             
             while(true){
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -81,21 +81,21 @@ public class Servidor {
                 if(usuarioSenha[1].equals("admin")){
                     isAdmin = true;
                     //String senha = usuarioSenha[2];
-                    admin = getAdministrador(admins,usuarioNome);
+                    admin = getAdministrador(gerenciador.getAdmins(),usuarioNome);
                     if(admin!=null){
                         mensagem1 = "\tBEM VINDO ADMIN : \n Digite 1 para adicionar livros ou 2 para deletar livros ou 0 para sair";
                     }else{
                         mensagem1="0";
                     }
                 }else{
-                    usuario = getCliente(clientes,usuarioNome);
+                    usuario = getCliente(gerenciador.getClientes(),usuarioNome);
                     String senha = usuarioSenha[1];
                     if(usuario !=null){
                         mensagem1 = "\tBEM VINDO NOVAMENTE: "+usuarioNome+" : \n Digite 1 para consultar lista de livros ou 2 para realizar emprestimo ou digite 3 para realizar devolucao ou 0 para sair";
                     }else{
-                        usuario = new Usuario(idUsuario,usuarioNome,senha);
-                        idUsuario++;
-                        clientes.add(usuario);
+                        usuario = new Usuario(gerenciador.getIdUsuario(),usuarioNome,senha);
+                        gerenciador.setIdUsuario();
+                        gerenciador.getClientes().add(usuario);
                         mensagem1 = "\tBEM VINDO,"+usuarioNome+" seu usuario foi criado automaticamente: \n Digite 1 para consultar lista de livros ou 2 para realizar emprestimo ou digite 3 para realizar devolucao ou 0 para sair";
                     }
                 }
@@ -116,26 +116,26 @@ public class Servidor {
                         // fazer o switch rolar decentemente
                         switch(acao){
                             case "add":
-                                Livro livro = new Livro(idLivro,acaoUsuario[1],Integer.parseInt(acaoUsuario[2]));
-                                idLivro++;
-                                livros.add(livro);
+                                Livro livro = new Livro(gerenciador.getIdLivro(),acaoUsuario[1],Integer.parseInt(acaoUsuario[2]));
+                                gerenciador.setIdLivro();
+                                gerenciador.getLivros().add(livro);
                                 break;
                             case "delete":
-                                sendData = getAllLivros(livros).getBytes();
+                                sendData = getAllLivros(gerenciador.getLivros()).getBytes();
                                 sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
                                 resposta.send(sendPacket);
                                 receivePacket = new DatagramPacket(receiveData, receiveData.length);
                                 serverSocket.receive(receivePacket);
                                 sentence = new String(receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
                                 int idDelete = Integer.parseInt(sentence);
-                                livros = admin.removerLivro(livros, idDelete);
+                                gerenciador.setLivros(admin.removerLivro(gerenciador.getLivros(),idDelete));
                                 
                                 break;
                             case "cancel":
                                 System.out.println("Deslogou");
                                 break;
                             case "list":
-                                sendData = getAllLivros(livros).getBytes();
+                                sendData = getAllLivros(gerenciador.getLivros()).getBytes();
                                 sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
                                 resposta.send(sendPacket);
                                 break;
@@ -144,7 +144,7 @@ public class Servidor {
                                 serverSocket.receive(receivePacket);
                                 sentence = new String(receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
                                 int idFind = Integer.parseInt(sentence);
-                                usuario.emprestar(livros, idFind);
+                                usuario.emprestar(gerenciador.getLivros(), idFind);
                                 break;
                             case "devolver":
                                 sendData = getAllLivros(usuario.getLivros()).getBytes();
