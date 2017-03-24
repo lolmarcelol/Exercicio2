@@ -11,17 +11,16 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AcessRunnable implements Runnable {
+public class ServerFixo{
 
     DatagramSocket serverSocket = null;
     private final Gerenciador gerenciador;
     DatagramPacket receivePacket;
-    public AcessRunnable(DatagramPacket receivePacket,Gerenciador gerenciador) {
+    public ServerFixo(DatagramPacket receivePacket,Gerenciador gerenciador) {
         this.receivePacket = receivePacket;
         this.gerenciador = gerenciador;
     }
     
-    @Override
     public void run() {
         try {
 

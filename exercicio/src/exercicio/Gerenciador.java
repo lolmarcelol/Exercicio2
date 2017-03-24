@@ -4,6 +4,7 @@ import exercicio.cliente.Administrador;
 import exercicio.cliente.Usuario;
 import exercicio.livro.Livro;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Gerenciador {
 
@@ -14,7 +15,6 @@ public class Gerenciador {
     private int idLivro;
     private int idAdmin;
 
-    
     public Gerenciador(ArrayList<Usuario> clientes,ArrayList<Administrador> admins,ArrayList<Livro> livros){
         this.clientes = clientes;
         this.admins = admins;
@@ -24,53 +24,87 @@ public class Gerenciador {
         this.idAdmin =1;
     }
 
-    public ArrayList<Usuario> getClientes() {
+    public synchronized ArrayList<Usuario> getClientes() {
         return clientes;
     }
 
-    public void setClientes(ArrayList<Usuario> clientes) {
+    public synchronized void setClientes(ArrayList<Usuario> clientes) {
         this.clientes = clientes;
     }
 
-    public ArrayList<Administrador> getAdmins() {
+    public synchronized ArrayList<Administrador> getAdmins() {
         return admins;
     }
 
-    public void setAdmins(ArrayList<Administrador> admins) {
+    public synchronized void setAdmins(ArrayList<Administrador> admins) {
         this.admins = admins;
     }
 
-    public ArrayList<Livro> getLivros() {
+    public synchronized ArrayList<Livro> getLivros() {
         return livros;
     }
 
-    public void setLivros(ArrayList<Livro> livros) {
+    public synchronized void setLivros(ArrayList<Livro> livros) {
         this.livros = livros;
     }
 
-    public int getIdUsuario() {
+    public synchronized int getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario() {
+    public synchronized void setIdUsuario() {
         this.idUsuario++;
     }
 
-    public int getIdLivro() {
+    public synchronized int getIdLivro() {
         return idLivro;
     }
 
-    public void setIdLivro() {
+    public synchronized void setIdLivro() {
         this.idLivro++;
     }
 
-    public int getIdAdmin() {
+    public synchronized int getIdAdmin() {
         return idAdmin;
     }
 
-    public void setIdAdmin() {
+    public synchronized void setIdAdmin() {
         this.idAdmin++;
     }
     
+    public synchronized Administrador getAdministrador(ArrayList<Administrador>admins,String clienteNome){
+        synchronized(admins){
+            for(Iterator<Administrador> iterator = admins.iterator();iterator.hasNext();){
+                Administrador admin = iterator.next();
+                if(admin.getNome().equals(clienteNome)){
+                    return admin;
+                }
+            }
+        }
+        return null;
+    }
+        
+    public synchronized Usuario getCliente(ArrayList<Usuario>usuarios,String clienteNome){
+        synchronized(usuarios){
+            for(Iterator<Usuario> iterator = usuarios.iterator();iterator.hasNext();){
+                Usuario usuario = iterator.next();
+                if(usuario.getNome().equals(clienteNome)){
+                    return usuario;
+                }
+            }
+        return null;
+        }
+    }
+    
+    public synchronized String getAllLivros(ArrayList<Livro>livros){
+        synchronized(livros){
+            String saida = "\t ID\t Nome\t Data\t Alugado\n";
+            for(Iterator<Livro> iterator = livros.iterator();iterator.hasNext();){
+                Livro livro = iterator.next();
+                saida += "\t"+livro.getId()+"\t"+livro.getTitulo()+"\t"+livro.getAno()+"\t" +livro.isEmprestado()+"\n";        
+            }
+            return saida;
+        }
+    }
        
 }

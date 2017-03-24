@@ -6,7 +6,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class ClienteServer {
@@ -61,7 +60,7 @@ public class ClienteServer {
                         case "0":
                             pacote2 = "cancel";
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress,receivePacket.getPort());
                             socket.send(sendPacket);
                             break;
                         case "1":
@@ -71,14 +70,14 @@ public class ClienteServer {
                             System.out.println("Digite o ano do livro");
                             pacote2 += sc.nextLine();
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);//cria pacote
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
                             socket.send(sendPacket);//envia pacote
                             break;
                         case "2":
                             System.out.println("Escolha o livro a ser deletado");
                             pacote2 = "delete";
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);//cria pacote
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
                             socket.send(sendPacket);
                             socket.receive(receivePacket);
                             msg = new String(receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
@@ -88,7 +87,7 @@ public class ClienteServer {
                             pacote2="";
                             pacote2 = sc.nextLine();
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());
                             socket.send(sendPacket);
                             break;           
                         default:
@@ -99,13 +98,13 @@ public class ClienteServer {
                          case "0":
                             pacote2 = "cancel";
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());
                             socket.send(sendPacket);
                             break;
                         case "1":
                             pacote2 = "list";
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);//cria pacote
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
                             socket.send(sendPacket);
                             socket.receive(receivePacket);
                             msg = new String(receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
@@ -116,12 +115,12 @@ public class ClienteServer {
                             System.out.println("Selecione o id do livro q quer emprestado");
                             pacote2="rent";
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);//cria pacote
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
                             socket.send(sendPacket);
                             pacote2="";
                             pacote2 = sc.nextLine();
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());
                             socket.send(sendPacket);
                             break;
                             
@@ -129,7 +128,7 @@ public class ClienteServer {
                             System.out.println("Selecione o id do livro q quer devolver");
                             pacote2="devolver";
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);//cria pacote
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());//cria pacote
                             socket.send(sendPacket);
                             socket.receive(receivePacket);
                             msg = new String(receivePacket.getData(),receivePacket.getOffset(),receivePacket.getLength());
@@ -137,7 +136,7 @@ public class ClienteServer {
                             pacote2="";
                             pacote2 = sc.nextLine();
                             sendData = pacote2.getBytes();
-                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+                            sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, receivePacket.getPort());
                             socket.send(sendPacket);   
                             break;
                     }
